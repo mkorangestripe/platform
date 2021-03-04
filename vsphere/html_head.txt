@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>title not set</title>
+<link rel="icon" type="image/png" href="cloudopsvcli_icon.png">
+<style>
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+</style>
+</head>
