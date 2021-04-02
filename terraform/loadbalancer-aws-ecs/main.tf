@@ -18,6 +18,14 @@ resource "aws_subnet" "loadbalancer-app2" {
   }
 }
 
+resource "aws_internet_gateway" "loadbalancer-app2" {
+  vpc_id = aws_vpc.loadbalancer-app2.id
+
+    tags = {
+      Name = "ECS loadbalancer-app2 - InternetGateway"
+    }
+  }
+
 resource "aws_ecs_cluster" "loadbalancer-app2" {
   name = "loadbalancer-app2"
 }
@@ -29,6 +37,8 @@ resource "aws_ecs_task_definition" "loadbalancer-app2" {
     {
       "name": "cat-loadbalancer",
       "image": "mkorangestripe/loadbalancer:latest",
+      "command": ["gunicorn -b 0.0.0.0:80 load_balancer:app"],
+      "entryPoint": ["sh", "-c"],
       "essential": true,
       "portMappings": [
         {
@@ -70,7 +80,7 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
 }
 
 resource "aws_security_group" "loadbalancer-app2-security-group" {
-  name       = "loadbalancer-app2-security-group"
+  name       = "ECS loadbalancer-app2 - ECS SecurityGroup"
   vpc_id     = aws_vpc.loadbalancer-app2.id
   ingress {
     from_port   = 80
@@ -95,9 +105,19 @@ resource "aws_ecs_service" "loadbalancer-app2" {
   desired_count   = 1 # the number of containers to deploy
 
   network_configuration {
-    # subnets          = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id, aws_default_subnet.default_az3.id]
     subnets          = [aws_subnet.loadbalancer-app2.id]
     assign_public_ip = true # Providing our containers with public IPs
     security_groups  = [aws_security_group.loadbalancer-app2-security-group.id] # Setting the security group
   }
+}
+
+resource "aws_network_interface" "loadbalancer-app2" {
+  subnet_id       = aws_subnet.loadbalancer-app2.id
+  # private_ips     = ["10.0.0.50"]
+  security_groups = [aws_security_group.loadbalancer-app2-security-group.id]
+
+#   attachment {
+#     instance     = aws_ecs_service.loadbalancer-app2.id
+#     device_index = 1
+#   }
 }
