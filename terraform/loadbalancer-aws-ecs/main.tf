@@ -13,6 +13,7 @@ resource "aws_vpc" "loadbalancer-app2" {
 resource "aws_subnet" "loadbalancer-app2" {
   vpc_id     = aws_vpc.loadbalancer-app2.id
   cidr_block = "10.0.0.0/24"
+  availability_zone = "us-east-2a"
     tags = {
     Name = "ECS loadbalancer-app2 - Public Subnet"
   }
@@ -37,7 +38,7 @@ resource "aws_ecs_task_definition" "loadbalancer-app2" {
     {
       "name": "cat-loadbalancer",
       "image": "mkorangestripe/loadbalancer:latest",
-      "command": ["gunicorn -b 0.0.0.0:80 load_balancer:app"],
+      "command": ["gunicorn", "-b", "0.0.0.0:80", "load_balancer:app"],
       "entryPoint": ["sh", "-c"],
       "essential": true,
       "portMappings": [
@@ -117,7 +118,7 @@ resource "aws_network_interface" "loadbalancer-app2" {
   security_groups = [aws_security_group.loadbalancer-app2-security-group.id]
 
 #   attachment {
-#     instance     = aws_ecs_service.loadbalancer-app2.id
+#     instance     = 
 #     device_index = 1
 #   }
 }
