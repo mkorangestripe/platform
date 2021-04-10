@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "loadbalancer-app2" {
     {
       "name": "cat-loadbalancer",
       "image": "mkorangestripe/loadbalancer:latest",
-      "command": ["gunicorn", "-b", "0.0.0.0:80", "load_balancer:app"],
+      "command": ["gunicorn -b 0.0.0.0:80 load_balancer:app"],
       "entryPoint": ["sh", "-c"],
       "essential": true,
       "portMappings": [
