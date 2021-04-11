@@ -52,25 +52,7 @@ resource "aws_ecs_cluster" "loadbalancer-app2" {
 
 resource "aws_ecs_task_definition" "loadbalancer-app2" {
   family                   = "loadbalancer-app2" # unique name for the task definition
-  container_definitions    = <<DEFINITION
-  [
-    {
-      "name": "cat-loadbalancer",
-      "image": "mkorangestripe/loadbalancer:latest",
-      "command": ["gunicorn -b 0.0.0.0:80 load_balancer:app"],
-      "entryPoint": ["sh", "-c"],
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 80,
-          "hostPort": 80
-        }
-      ],
-      "memory": 512,
-      "cpu": 256
-    }
-  ]
-  DEFINITION
+  container_definitions    = file("task-definitions/loadbalancer-app2.json")
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 512         # Specifying the memory our container requires
