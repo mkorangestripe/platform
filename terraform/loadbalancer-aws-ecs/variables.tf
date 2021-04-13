@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
+variable "aws_cloudwatch_log_group" {
+  description = "AWS Cloudwatch log group"
+  type        = string
+  default     = "ecs/loadbalancer-app2"
+}
+
 variable "vpc_cidr_block" {
   description = "CIDR block for VPC"
   type        = string

@@ -52,12 +52,16 @@ resource "aws_ecs_cluster" "loadbalancer-app2" {
 
 resource "aws_ecs_task_definition" "loadbalancer-app2" {
   family                   = "loadbalancer-app2" # unique name for the task definition
-  container_definitions    = file("task-definitions/loadbalancer-app2.json")
+  container_definitions    = data.template_file.task_definition_template.rendered
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 512         # Specifying the memory our container requires
   cpu                      = 256         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole2.arn
+}
+
+resource "aws_cloudwatch_log_group" "loadbalancer-app2" {
+  name = var.aws_cloudwatch_log_group
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole2" {
