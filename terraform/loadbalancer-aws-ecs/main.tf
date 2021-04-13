@@ -15,7 +15,7 @@ resource "aws_vpc" "loadbalancer-app2" {
 resource "aws_subnet" "loadbalancer-app2" {
   vpc_id     = aws_vpc.loadbalancer-app2.id
   cidr_block = "10.0.0.0/24"
-  availability_zone = "us-east-2a"
+  availability_zone = var.aws_availability_zone
     tags = {
     Name = "ECS loadbalancer-app2 - Public Subnet"
   }

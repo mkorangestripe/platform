@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
+variable "aws_availability_zone" {
+  description = "AWS availability zone"
+  type        = string
+  default     = "us-east-2a"
+}
+
 variable "aws_cloudwatch_log_group" {
   description = "AWS Cloudwatch log group"
   type        = string
