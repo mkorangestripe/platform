@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: single-container-catlb
+  labels:
+    app: catlb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catlb
+  template:
+    metadata:
+      labels:
+        app: catlb
+    spec:
+      containers:
+      - name: cat-loadbalancer
+        image: mkorangestripe/loadbalancer:1.3.0
+        ports:
+        - containerPort: 80
