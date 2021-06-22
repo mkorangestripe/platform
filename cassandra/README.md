@@ -1,4 +1,4 @@
-# Cassandra Scripts
+# Cassandra Consistency Level Testing
 
 1. Run cassandra_create_table_rand_consistency.py to get the random consistency level.
 2. Run cassandra_verify_table_consistency.py <CONSISTENCY_LEVEL>
