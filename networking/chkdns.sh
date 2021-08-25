@@ -24,7 +24,7 @@ get_ptr() {
 }
 
 get_arecord() {
-    PTR_HOSTNAME=$(echo "$DNS_RETURN_LINE1" | awk '{printf $5}')
+    PTR_HOSTNAME=$(echo "$DNS_RETURN_LINE1" | awk '{print $5}')
     ARECORD=$(host "$PTR_HOSTNAME") || { echo "$ARECORD"; exit 1; }
     ARECORD_IPADDR=$(echo "$ARECORD" | awk '{print $4}')
 
