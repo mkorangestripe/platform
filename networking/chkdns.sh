@@ -14,7 +14,7 @@ get_ptr() {
 
     echo "$PTR"
 
-    if [ "$ARECORD_HOSTNAME" != "${PTR_HOSTNAME%?}" ]; then
+    if [[ "$ARECORD_HOSTNAME" != "${PTR_HOSTNAME%?}" ]]; then
         echo "Hostname in A record and PTR record do not match."
         echo "$ARECORD_HOSTNAME"
         echo "$PTR_HOSTNAME"
@@ -30,7 +30,7 @@ get_arecord() {
 
     echo "$ARECORD"
 
-    if [ "$IPADDR" != "$ARECORD_IPADDR" ]; then
+    if [[ "$IPADDR" != "$ARECORD_IPADDR" ]]; then
         echo "IP address in PTR and A record do not match."
 	echo "$IPADDR"
 	echo "$ARECORD_IPADDR"
@@ -45,9 +45,9 @@ RECORD_TYPE=$(echo "$DNS_RETURN_LINE1" | egrep -wo 'address|pointer')
 
 echo "$DNS_RETURN"
 
-if [ "$RECORD_TYPE" == "address" ]; then
+if [[ "$RECORD_TYPE" == "address" ]]; then
     get_ptr
-elif [ "$RECORD_TYPE" == "pointer" ]; then
+elif [[ "$RECORD_TYPE" == "pointer" ]]; then
     IPADDR=$1
     get_arecord
 fi
