@@ -3,8 +3,10 @@
 
 # Useful alias examples:
 # Create a symlink in ~/.bin from pingscan to pingscan.py
-# alias pingscan24='pingscan -w 2 -c 192.168.0.0/24'
-# alias pingscan27='pingscan -w 2 -c 192.168.0.0/27'
+# alias pingscan024='pingscan -w 2 -c 192.168.0.0/24'
+# alias pingscan027='pingscan -w 2 -c 192.168.0.0/27'
+# alias pingscan124='pingscan -w 2 -c 192.168.1.0/24'
+# alias pingscan127='pingscan -w 2 -c 192.168.1.0/27'
 
 """
 Scan a network by pinging a CIDR range in parallel.
@@ -16,6 +18,7 @@ CIDR notation examples:
 import sys
 import subprocess
 import ipaddress
+import platform
 from argparse import ArgumentParser
 
 
@@ -39,14 +42,14 @@ class PingScan(object):
             sys.exit(1)
         self.ip_list = list(ip_net.hosts())
 
-    def run_ping_cmd(self, ip):
+    def run_ping_cmd(self, deadline_param, ip):
         """Run the ping command."""
-        ping_cmd = 'ping -w %s %s' % (args.deadline, ip)
+        ping_cmd = 'ping %s %s %s' % (deadline_param, args.deadline, ip)
         return subprocess.Popen(ping_cmd,
                                 shell=True,
                                 stdout=subprocess.PIPE)
 
-    def create_ping_processes(self):
+    def create_ping_processes(self, deadline_param):
         """Create a ping subprocesses per IP address."""
         self.jobs = []
         self.response_by_ip = {}
@@ -54,7 +57,7 @@ class PingScan(object):
         for ip in self.ip_list:
             ip = str(ip)
             self.response_by_ip[ip] = ''
-            ping_process = self.run_ping_cmd(ip)
+            ping_process = self.run_ping_cmd(deadline_param, ip)
             self.jobs.append((ping_process, ip))
 
     def get_return_code_response(self):
@@ -123,6 +126,10 @@ def _get_argparser():
 
 if __name__ == '__main__':
 
+    deadline_param = '-w'
+    if platform.system() == 'Darwin':
+        deadline_param = '-t'
+
     args = _get_argparser()
 
     if args.infile is not None:
@@ -134,7 +141,7 @@ if __name__ == '__main__':
     for net_addr in cidr_list:
         ping_scan = PingScan(net_addr)
         ping_scan.generate_ip_addrs()
-        ping_scan.create_ping_processes()
+        ping_scan.create_ping_processes(deadline_param)
         ping_scan.get_return_code_response()
 
         if args.up is True:
