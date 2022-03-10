@@ -3,10 +3,10 @@
 
 # Useful alias examples:
 # Create a symlink in ~/.bin from pingscan to pingscan.py
-# alias pingscan024='pingscan -w 2 -c 192.168.0.0/24'
-# alias pingscan027='pingscan -w 2 -c 192.168.0.0/27'
-# alias pingscan124='pingscan -w 2 -c 192.168.1.0/24'
-# alias pingscan127='pingscan -w 2 -c 192.168.1.0/27'
+# alias inet='ifconfig | grep -v 127.0.0.1 | grep -w inet'
+# THIRD_OCT=$(inet | awk -F. '{print $3}')
+# alias pingscan/27="pingscan -w 2 -c 192.168.$THIRD_OCT.0/27"
+# alias pingscan/24="pingscan -w 2 -c 192.168.$THIRD_OCT.0/24"
 
 """
 Scan a network by pinging a CIDR range in parallel.
