@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # Gavin Purcell
 
-# Useful aliases:
-# ln -s [PATH_TO_PINGSCAN]/pingscan.py ~/.bin/pingscan
-# alias inetC='ip addr | grep "inet 192"'
-# THIRD_OCT=$(inetC | awk -F. '{print $3}')  # assuming only one class C address
-# alias pingscan-27="pingscan -w 2 -c 192.168.$THIRD_OCT.0/27"
-# alias pingscan-24="pingscan -w 2 -c 192.168.$THIRD_OCT.0/24"
+# Alias examples:
+# ln -s [PATH_TO_FILE]/pingscan.py ~/.bin/pingscan
+# alias inetC='{ ip addr || ifconfig; } 2> /dev/null | grep "inet 192"'
+# THIRD_OCT_C=$(inetC | awk -F. '{print $3}')  # assuming only one class C address
+# alias pingscan/27="~/.bin/pingscan -w 2 -c 192.168.$THIRD_OCT_C.0/27"
+# alias pingscan/24="~/.bin/pingscan -w 2 -c 192.168.$THIRD_OCT_C.0/24"
 
 """
 Scan a network by pinging a CIDR range in parallel.
