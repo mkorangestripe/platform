@@ -5,5 +5,5 @@
 ![Output from pingscan.py](sample-output/ping_scan.png)
 
 ### chkdns.sh
-###### This script compares the A record and PTR record.
+###### Compare the A record and PTR record of host.
 ![Output from chkdns.sh](sample-output/chkdns.png)
