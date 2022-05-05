@@ -151,9 +151,7 @@ if __name__ == '__main__':
             print('The following hosts are down.\n')
             ping_scan.print_ip_group(1)
         else:
-            print()
             ping_scan.print_ips_state()
 
         if args.verbose is True:
-            print()
             ping_scan.print_stdout()
