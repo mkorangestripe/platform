@@ -60,7 +60,7 @@ if [ ! -f "$1" ]; then
 else
     HOSTS=$(cat $1)
     for HOST in $HOSTS; do
-        check_record_type $HOST
+        check_dns_records $HOST
         echo
     done
 fi
