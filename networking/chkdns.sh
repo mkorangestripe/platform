@@ -15,7 +15,8 @@ get_ptr() {
 
     echo "$PTR"
 
-    if [[ "$ARECORD_HOSTNAME" != "${PTR_HOSTNAME%?}" ]]; then
+    PTR_HOSTNAME_PERIOD_STRIPPED=${PTR_HOSTNAME%?}
+    if [[ "${ARECORD_HOSTNAME,,}" != "${PTR_HOSTNAME_PERIOD_STRIPPED,,}" ]]; then
         echo "Hostname in A record and PTR record do not match."
         echo "A:   $ARECORD_HOSTNAME"
         echo "PTR: $PTR_HOSTNAME"
