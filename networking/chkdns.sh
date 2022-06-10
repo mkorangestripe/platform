@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Move record counting to a common function.
 
 if [ $# -ne 1 ]; then
     echo "This script compares the A record and PTR record of a host."
@@ -9,9 +8,7 @@ if [ $# -ne 1 ]; then
 fi
 
 get_ptr() {
-    #ARECORD_HOSTNAME=$(echo "$DNS_RETURN_LINE1" | awk '{print $1}')
     ARECORD_HOSTNAME=$(echo "$DNS_RETURN" | awk '{print $1}')
-    #ARECORD_IPADDR=$(echo "$DNS_RETURN_LINE1" | awk '{print $4}')
     ARECORD_IPADDR=$(echo "$DNS_RETURN" | awk '{print $4}')
     PTR=$(host "$ARECORD_IPADDR") || { echo "$PTR"; exit 1; }
 
@@ -36,7 +33,6 @@ get_ptr() {
 }
 
 get_arecord() {
-    #PTR_HOSTNAME=$(echo "$DNS_RETURN_LINE1" | awk '{print $5}')
     PTR_HOSTNAME=$(echo "$DNS_RETURN" | awk '{print $5}')
     ARECORD=$(host "$PTR_HOSTNAME") || { echo "$ARECORD"; exit 1; }
     ARECORD_IPADDR=$(echo "$ARECORD" | awk '{print $4}')
@@ -67,18 +63,14 @@ check_dns_records() {
         echo "$DNS_RETURN"
         exit 1
     fi
-    #DNS_RETURN_LINE1=$(echo "$DNS_RETURN" | head -1)
-    #RECORD_TYPE=$(echo "$DNS_RETURN_LINE1" | egrep -wo 'address|pointer')
     RECORD_TYPE=$(echo "$DNS_RETURN" | egrep -wo 'address|pointer')
 
     echo "$DNS_RETURN"
 
     if [[ "$RECORD_TYPE" == "address" ]]; then
-        #get_ptr $DNS_RETURN_LINE1
         get_ptr $DNS_RETURN
     elif [[ "$RECORD_TYPE" == "pointer" ]]; then
         IPADDR=$1
-        #get_arecord $DNS_RETURN_LINE1
         get_arecord $DNS_RETURN
     fi
 }
