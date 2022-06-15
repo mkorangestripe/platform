@@ -11,61 +11,74 @@ fi
 get_ptr() {
     ARECORD_HOSTNAME=$(echo "$DNS_RETURN" | awk '{print $1}')
     ARECORD_IPADDR=$(echo "$DNS_RETURN" | awk '{print $4}')
-    PTR=$(host "$ARECORD_IPADDR") || { echo "$PTR"; exit 1; }
+    PTR=$(host "$ARECORD_IPADDR")
 
-    PTR_RECORD_COUNT=$(echo "$PTR" | wc -l)
-    if [[ $PTR_RECORD_COUNT -gt 1 ]]; then
-        echo "Multiple PTR records returned."
+    if [[ $? -ne 0 ]]; then
         echo "$PTR"
     else
-        echo "$PTR"
-        PTR_HOSTNAME=$(echo "$PTR" | awk '{print $5}')
-        PTR_HOSTNAME_PERIOD_STRIPPED=${PTR_HOSTNAME%?}
-        if [[ "${ARECORD_HOSTNAME,,}" != "${PTR_HOSTNAME_PERIOD_STRIPPED,,}" ]]; then
-            echo "Hostname in A record and PTR record do not match."
-            echo "A:   $ARECORD_HOSTNAME"
-            echo "PTR: $PTR_HOSTNAME"
+        PTR_RECORD_COUNT=$(echo "$PTR" | wc -l)
+        if [[ $PTR_RECORD_COUNT -gt 1 ]]; then
+            echo "Multiple PTR records returned."
+            echo "$PTR"
         else
-            echo "Records match."
+            echo "$PTR"
+            PTR_HOSTNAME=$(echo "$PTR" | awk '{print $5}')
+            PTR_HOSTNAME_PERIOD_STRIPPED=${PTR_HOSTNAME%?}
+            if [[ "${ARECORD_HOSTNAME,,}" != "${PTR_HOSTNAME_PERIOD_STRIPPED,,}" ]]; then
+                echo "Hostname in A record and PTR record do not match."
+                echo "A:   $ARECORD_HOSTNAME"
+                echo "PTR: $PTR_HOSTNAME"
+            else
+                echo "Records match."
+            fi
         fi
     fi
 }
 
 get_arecord() {
     PTR_HOSTNAME=$(echo "$DNS_RETURN" | awk '{print $5}')
-    ARECORD=$(host "$PTR_HOSTNAME") || { echo "$ARECORD"; exit 1; }
+    ARECORD=$(host "$PTR_HOSTNAME")
 
-    ARECORD_COUNT=$(echo "$ARECORD" | wc -l)
-    if [[ $ARECORD_COUNT -gt 1 ]]; then
-        echo "Multiple A records returned."
+    if [[ $? -ne 0 ]]; then
         echo "$ARECORD"
     else
-        echo "$ARECORD"
-        ARECORD_IPADDR=$(echo "$ARECORD" | awk '{print $4}')
-        if [[ "$IPADDR" != "$ARECORD_IPADDR" ]]; then
-            echo "IP address in PTR and A record do not match."
-            echo "PTR:  $IPADDR"
-            echo "A:    $ARECORD_IPADDR"
+        ARECORD_COUNT=$(echo "$ARECORD" | wc -l)
+        if [[ $ARECORD_COUNT -gt 1 ]]; then
+            echo "Multiple A records returned."
+            echo "$ARECORD"
         else
-            echo "Records match."
+            echo "$ARECORD"
+            ARECORD_IPADDR=$(echo "$ARECORD" | awk '{print $4}')
+            if [[ "$IPADDR" != "$ARECORD_IPADDR" ]]; then
+                echo "IP address in PTR and A record do not match."
+                echo "PTR:  $IPADDR"
+                echo "A:    $ARECORD_IPADDR"
+            else
+                echo "Records match."
+            fi
         fi
     fi
 }
 
 check_dns_records() {
-    DNS_RETURN=$(host "$1") || { echo "$DNS_RETURN"; exit 1; }
-    RECORD_COUNT=$(echo "$DNS_RETURN" | egrep -c 'address|pointer')
-    if [[ $RECORD_COUNT -gt 1 ]]; then
-        echo "Multiple records returned."
+    DNS_RETURN=$(host "$1")
+
+    if [[ $? -ne 0 ]]; then
         echo "$DNS_RETURN"
     else
-        RECORD_TYPE=$(echo "$DNS_RETURN" | egrep -wo 'address|pointer')
-        echo "$DNS_RETURN"
-        if [[ "$RECORD_TYPE" == "address" ]]; then
-            get_ptr $DNS_RETURN
-        elif [[ "$RECORD_TYPE" == "pointer" ]]; then
-            IPADDR=$1
-            get_arecord $DNS_RETURN
+        RECORD_COUNT=$(echo "$DNS_RETURN" | egrep -c 'address|pointer')
+        if [[ $RECORD_COUNT -gt 1 ]]; then
+            echo "Multiple records returned."
+            echo "$DNS_RETURN"
+        else
+            RECORD_TYPE=$(echo "$DNS_RETURN" | egrep -wo 'address|pointer')
+            echo "$DNS_RETURN"
+            if [[ "$RECORD_TYPE" == "address" ]]; then
+                get_ptr $DNS_RETURN
+            elif [[ "$RECORD_TYPE" == "pointer" ]]; then
+                IPADDR=$1
+                get_arecord $DNS_RETURN
+            fi
         fi
     fi
 }
