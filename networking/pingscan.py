@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 # Gavin Purcell
 
-# Alias examples:
-# ln -s [PATH_TO_FILE]/pingscan.py ~/.local/bin/pingscan
-# Assuming only one Class C address:
-# alias inetC='{ ip addr || ifconfig; } 2> /dev/null | grep "inet 192"'
-# alias pingscan-27="pingscan -w 2 -c 192.168.$(inetC | awk -F. '{print $3}').0/27"
-# alias pingscan-24="pingscan -w 2 -c 192.168.$(inetC | awk -F. '{print $3}').0/24"
-
 """
 Scan a network by pinging a CIDR range in parallel.
 CIDR notation examples:
