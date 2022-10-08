@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Helper script for pingscan.py
-# Evaluate the third octet with each execution.
 
 # Required symlinks:
 # cd ~/.local/bin
 # ln -s ~/src/mkorangestripe/devops/networking/pingscan.py pingscan
 # ln -s ~/src/mkorangestripe/devops/networking/pingscan_helper.sh pingscan_helper
 
-# Useful aliases:
-# zsh also allows pingscan/27 and pingscan/24
-# alias pingscan-27="pingscan_helper 27"
-# alias pingscan-24="pingscan_helper 24"
+if [ $# -ne 1 ]; then
+    echo "Helper script for pingscan.py"
+    echo "Evaluate the third octet with each execution."
+    echo "Example: pingscan_helper 27"
+    exit 1
+fi
 
 # Assuming only one Class C address:
 if command -v ip > /dev/null; then
