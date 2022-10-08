@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Required symlinks:
+# Useful symlinks:
 # cd ~/.local/bin
 # ln -s ~/src/mkorangestripe/devops/networking/pingscan.py pingscan
 # ln -s ~/src/mkorangestripe/devops/networking/pingscan_helper.sh pingscan_helper
@@ -8,7 +8,8 @@
 if [ $# -ne 1 ]; then
     echo "Helper script for pingscan.py"
     echo "Evaluate the third octet with each execution."
-    echo "Example: pingscan_helper 27"
+    echo "Example using local files: ./pingscan_helper.py 27"
+    echo "Example using symlinks in path: pingscan_helper 27"
     exit 1
 fi
 
@@ -19,10 +20,19 @@ else
     THIRD_OCTET=$(ifconfig | grep "inet 192" | awk -F. '{print $3}')
 fi
 
-if [ $1 == 27 ]; then
-    pingscan -w 2 -c 192.168.$THIRD_OCTET.0/27
-fi
+LOCAL='false'
+test -x pingscan.py && LOCAL='true'
 
-if [ $1 == 24 ]; then
-    pingscan -w 2 -c 192.168.$THIRD_OCTET.0/24
+if [ $1 == 27 ]; then
+    if [ $LOCAL == 'true' ]; then
+        ./pingscan.py -w 2 -c 192.168.$THIRD_OCTET.0/27
+    else
+        pingscan -w 2 -c 192.168.$THIRD_OCTET.0/27
+    fi
+elif [ $1 == 24 ]; then
+    if [ $LOCAL == 'true' ]; then
+        ./pingscan.py -w 2 -c 192.168.$THIRD_OCTET.0/24
+    else
+        pingscan -w 2 -c 192.168.$THIRD_OCTET.0/24
+    fi
 fi
