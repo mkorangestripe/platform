@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
-# Useful symlinks:
+# Useful symlinks and aliases:
 # cd ~/.local/bin
 # ln -s ~/src/mkorangestripe/devops/networking/pingscan.py pingscan
-# ln -s ~/src/mkorangestripe/devops/networking/pingscan_helper.sh pingscan_helper
+# ln -s ~/src/mkorangestripe/devops/networking/pingscan_local.sh pingscan_local
+# alias pingscan-27="pingscan_local 27"
+# alias pingscan-24="pingscan_local 24"
 
 if [ $# -ne 1 ]; then
-    echo "Helper script for pingscan.py"
-    echo "Evaluate the third octet with each execution."
-    echo "Example using local files: ./pingscan_helper.py 27"
-    echo "Example using symlinks in path: pingscan_helper 27"
+    echo "Pingscan the local Class C network with pingscan.py"
+    echo "This determines the third octet every time, useful when moving locations."
+    echo "Example using local files: ./pingscan_local.py 27"
+    echo "Example using symlinks in path: pingscan_local 27"
     exit 1
 fi
 
