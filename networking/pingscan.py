@@ -16,12 +16,14 @@ from argparse import ArgumentParser
 
 
 class Color:
+    """Colors to indicate IP address status: up/down"""
     green = '\033[92m'
     red = '\033[91m'
     end = '\033[0m'
 
 
-class PingScan(object):
+class PingScan:
+    """Create ping processes, execute in parallel, and print results."""
 
     def __init__(self, net_address):
         self.net_address = net_address
