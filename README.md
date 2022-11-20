@@ -1,2 +1,2 @@
-## Python, Shell Scripts, and IaC for Linux Administration, DevOps, etc.
+## Automation, build and performance testing utilities, etc
 See individual directories for script info and sample output.
