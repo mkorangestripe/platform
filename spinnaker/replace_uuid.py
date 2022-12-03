@@ -30,20 +30,24 @@ def _get_argparser():
     return args
 
 def read_in_file(file_name):
-    with open(file_name, 'r') as f:
-        file_data = f.read()
+    """Read in file"""
+    with open(file_name, 'r', encoding="utf-8") as in_file:
+        file_data = in_file.read()
     return file_data
 
 def write_out_file(file_name, file_data):
-    with open(file_name, 'w') as f:
-        f.write(file_data)
+    """Write out file"""
+    with open(file_name, 'w', encoding="utf-8") as out_file:
+        out_file.write(file_data)
 
 def update_uuid_dictionary(old_uuid):
+    """Update UUID dictionary"""
     if old_new_uuids.get(old_uuid) is None:
         new_uuid = uuid.uuid4()
         old_new_uuids[old_uuid] = new_uuid
 
 def find_replace_uuids(file_data):
+    """Find and replace UUIDs"""
     for line in file_data.split('\n'):
         match = re_uuid.search(line)
         if bool(match):
@@ -56,56 +60,56 @@ def find_replace_uuids(file_data):
 
 if __name__ == '__main__':
 
-    args = _get_argparser()
+    parsed_args = _get_argparser()
 
-    spinnaker_file = 'spinnaker.yaml'
-    spinnaker_path = 'resources/'
+    SPINNAKER_FILE = 'spinnaker.yaml'
+    SPINNAKER_PATH = 'resources/'
 
     pipeline_files = ['pipeline-develop.json',
                       'pipeline-production.json',
                       'pipeline-stage.json']
-    pipeline_path = 'deploy/spinnaker/'
+    PIPELINE_PATH = 'deploy/spinnaker/'
 
     re_uuid = re.compile("[0-F]{8}-([0-F]{4}-){3}[0-F]{12}", re.I)
 
     old_new_uuids = {}
 
     all_files = []
-    spinnaker_file = spinnaker_path + spinnaker_file
-    all_files.append(spinnaker_file)
+    SPINNAKER_FILE = SPINNAKER_PATH + SPINNAKER_FILE
+    all_files.append(SPINNAKER_FILE)
 
     for pipeline_file in pipeline_files:
-        pipeline_file = pipeline_path + pipeline_file
-        all_files.append(pipeline_file)
+        PIPELINE_FILE_PATH = PIPELINE_PATH + pipeline_file
+        all_files.append(PIPELINE_FILE_PATH)
 
-    file_not_found = False
+    FILE_NOT_FOUND = False
     for file in all_files:
         if os.path.exists(file) is False:
-            file_not_found = True
+            FILE_NOT_FOUND = True
             print("Cannot find", file)
-    if file_not_found:
+    if FILE_NOT_FOUND:
         sys.exit(1)
 
     print("The following files will be searched for uuid's.\n")
-    for file_name in all_files:
-        print(file_name)
+    for file in all_files:
+        print(file)
     print('')
 
-    for file_name in all_files:
-        file_data = read_in_file(file_name)
-        updated_file_data = find_replace_uuids(file_data)
-        if args.new is not None:
-            updated_file_data = file_data.replace(args.current, args.new)
-        if args.dryrun is False:
-            write_out_file(file_name, updated_file_data)
+    for file in all_files:
+        file_content = read_in_file(file)
+        updated_file_content = find_replace_uuids(file_content)
+        if parsed_args.new is not None:
+            updated_file_content = file_content.replace(parsed_args.current, parsed_args.new)
+        if parsed_args.dryrun is False:
+            write_out_file(file, updated_file_content)
 
     print("Number of unique uuid's found:", str(len(old_new_uuids)) + '\n')
     print('Old and New uuids:')
-    for old_uuid, new_uuid in old_new_uuids.items():
-        print(old_uuid, new_uuid)
+    for old_uuid_item, new_uuid_item in old_new_uuids.items():
+        print(old_uuid_item, new_uuid_item)
     print('')
 
-    if args.dryrun is True:
+    if parsed_args.dryrun is True:
         print('No files changed, dryrun complete.')
         sys.exit()
 
